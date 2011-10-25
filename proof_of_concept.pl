@@ -9,6 +9,7 @@ use Data::Dumper;
 use IO::Prompt;
 
 use Net::Google::Spreadsheets;
+use Net::Google::AuthSub;
 
 prompt('Username: ');
 my $user = $_;
@@ -16,6 +17,14 @@ my $user = $_;
 prompt('Password: ', -e => '*');
 my $pass = $_;
 
+
+my $auth = Net::Google::AuthSub->new();
+
+my $response = $auth->login($user, $pass);
+
+unless($response->is_success) {
+    die "Authentication Failure: " . $response->error;
+}
 
 my $service = Net::Google::Spreadsheets->new(
     username => $user,
